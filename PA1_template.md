@@ -84,3 +84,35 @@ d <- sum(is.na(data))
 ```
 
 ####The total number of missing values is : **2304**
+
+
+2. Devise a strategy for filling in all of the missing values in the dataset. The strategy does not need to be sophisticated. For example, you could use the mean/median for that day, or the mean for that 5-minute interval, etc.
+
+
+#### The strategy for imputing missing values is to use the mean for that 5 minute interval
+
+```r
+datacomb <- merge(data,datac,by="date",ALL=TRUE)
+datacomb <- merge(data,datac)
+datacomb1 <- datacomb
+datacomb1$interval <- factor(datacomb1$interval)
+datacombf <- merge(datacomb1,datals,by = "interval", all=TRUE)
+#Below step is imputing missing values, the missing values is the mean for that interval
+datacombf$steps[is.na(datacombf$steps)] <- datacombf$stepsave[is.na(datacombf$steps)]
+```
+
+3. Create a new dataset that is equal to the original dataset but with the missing data filled in
+
+#### Now again create a histogram with the dataset which has the missing values filled
+
+```r
+datacombft <- tapply(datacombf$steps,datacombf$date,sum)
+datacombftc <- data.frame(date = rownames(datacombft), stepsmean = as.vector(datacombft) )
+```
+
+4. Make a histogram of the total number of steps taken each day and Calculate and report the mean and median total number of steps taken per day. Do these values differ from the estimates from the first part of the assignment? What is the impact of imputing missing data on the estimates of the total daily number of steps?
+
+```r
+hist(datacombftc$stepsmean,main="Histogram of Total Steps per day",xlab="Total Steps")
+```
+
