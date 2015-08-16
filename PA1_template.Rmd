@@ -1,19 +1,26 @@
 #Reproducible research assignment
+#
+   
+   
+**This report is part of the peer assignment 1 for reproducible research, it answers questions by analysing the  activity tracking dataset**
+
+**The numbering and headings used in this report are the same as the numbering and questions as part of the assignment, in order to make the report easy to read and interpret**
 
 
 ###Loading and preprocessing the data
 
 1. Load the data (i.e. read.csv())
 2. Process/transform the data (if necessary) into a format suitable for your analysis
-```{r, echo=TRUE}
+```{r, echo=TRUE,tidy=TRUE}
 data <- read.csv("activity.csv")
 datac <- data[complete.cases(data$steps) ,]
 datav <- datac[ which(datac$steps > 0),]
 ```
 
+
 ###What is mean total number of steps taken per day?
 
-- Ignore the missing values in the dataset
+Ignore the missing values in the dataset
 
 1. Calculate the total number of steps taken per day
 
@@ -34,8 +41,8 @@ hist(datasc$stepstotal,main="Histogram of Total Steps per day",xlab="Total Steps
 med <- median(datasc$stepstotal, na.rm = TRUE)
 men <- mean(datasc$stepstotal, na.rm = TRUE)
 ```
-####The mean is   : **`r men`**  
-####The median is : **`r med`**
+**The mean is   : `r men`**  
+**The median is : `r med`**
 
 ###What is the average daily activity pattern?
 
@@ -61,7 +68,7 @@ plot(dtest$interval, dtest$stepsave, type="l", xlab= "Interval", ylab= "Average 
 mx <- dtest[which.max(as.numeric(dtest$stepsave)),1]
 ```
 
-####The interval that contains the maximum number of steps is : **`r mx`**
+**The interval that contains the maximum number of steps is : `r mx`**
 
 ###Imputing missing values
 
@@ -71,13 +78,13 @@ mx <- dtest[which.max(as.numeric(dtest$stepsave)),1]
 d <- sum(is.na(data))
 ```
 
-####The total number of missing values is : **`r d`**
+**The total number of missing values is : `r d`**
 
 
 2. Devise a strategy for filling in all of the missing values in the dataset. The strategy does not need to be sophisticated. For example, you could use the mean/median for that day, or the mean for that 5-minute interval, etc.
 
 
-#### The strategy for imputing missing values is to use the mean for that 5 minute interval
+**The strategy for imputing missing values is to use the mean for that 5 minute interval**
 
 ```r
 datacomb <- merge(data,datac,by="date",ALL=TRUE)
@@ -92,7 +99,8 @@ datacombf$steps[is.na(datacombf$steps)] <- datacombf$stepsave[is.na(datacombf$st
 
 3. Create a new dataset that is equal to the original dataset but with the missing data filled in
 
-#### Now again create a histogram with the dataset which has the missing values filled
+
+**Now again create a histogram with the dataset which has the missing values filled**
 
 ```r
 datacombft <- tapply(datacombf$steps,datacombf$date,sum)
@@ -101,7 +109,18 @@ datacombftc <- data.frame(date = rownames(datacombft), stepsmean = as.vector(dat
 
 4. Make a histogram of the total number of steps taken each day and Calculate and report the mean and median total number of steps taken per day. Do these values differ from the estimates from the first part of the assignment? What is the impact of imputing missing data on the estimates of the total daily number of steps?
 
-```r
+
+```{r,echo=TRUE}
 hist(datacombftc$stepsmean,main="Histogram of Total Steps per day",xlab="Total Steps")
 ```
+
+```{r meanmedianimp,echo=TRUE}
+medimpute <- median(datacombftc$stepsmean, na.rm = TRUE)
+menimpute <- mean(datacombftc$stepsmean, na.rm = TRUE)
+```
+
+**The mean after imputing missing values is   : `r medimpute`**  
+**The median after imputing missing values is : `r menimpute`**
+
+**After imputing the values, the mean and median have changed (increased)**
 
